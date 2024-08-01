@@ -1,9 +1,11 @@
-from typing import Union
+from typing import Union, Annotated
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 
 app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
 class Item(BaseModel):
@@ -18,7 +20,7 @@ def read_root():
 
 
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
+def read_item(token: Annotated[str, Depends(oauth2_scheme)], item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
