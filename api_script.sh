@@ -3,6 +3,8 @@
 # Repo AI-Agent-in-LangGraph
 # env
 DIRECTORY="webapi_env"
+IMAGE="fastapiimage"
+CONTAINER="fastapicontainer"
 
 function activate () {
   source $HOME/git/webAPI/$DIRECTORY/bin/activate
@@ -15,11 +17,20 @@ else
     /usr/local/bin/python3 -m venv "$DIRECTORY"
 fi
 
-function run_ () {
-  echo "what"
+function docker_build () {
+  if [ "$(docker ps -a -q -f name=$CONTAINER)" ]; then
+      # cleanup
+      echo "cleaning up existing container:"
+      docker stop $CONTAINER
+      docker rm $CONTAINER
+  fi
+  # Update image build
+  docker build -t $IMAGE .
+  # run your container
+  docker run -d --name $CONTAINER -p 80:80 $IMAGE
 }
 
-# Run on mac with source agent_build_script && authenticate_and_get
+# Run on mac with source api_script && authenticate_and_get
 function authenticate_and_get () {
   # args
   #  : @required string $1=username

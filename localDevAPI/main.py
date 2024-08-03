@@ -5,19 +5,13 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="ChimichangApp",
-    description='blah',
-    summary="Deadpool's favorite app. Nuff said.",
+    title="Web Application with Authentication",
+    description='This is a sample web app using fastAPI',
+    summary="Add Summary Here",
     version="0.0.1",
-    terms_of_service="http://example.com/terms/",
     contact={
-        "name": "Deadpoolio the Amazing",
-        "url": "http://x-force.example.com/contact/",
-        "email": "dp@x-force.example.com",
-    },
-    license_info={
-        "name": "Apache 2.0",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        "name": "Steven Loaiza",
+        "url": "http://github.com/loaizasteven",
     },
 )
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
