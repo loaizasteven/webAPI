@@ -4,7 +4,22 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI(
+    title="ChimichangApp",
+    description='blah',
+    summary="Deadpool's favorite app. Nuff said.",
+    version="0.0.1",
+    terms_of_service="http://example.com/terms/",
+    contact={
+        "name": "Deadpoolio the Amazing",
+        "url": "http://x-force.example.com/contact/",
+        "email": "dp@x-force.example.com",
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
+)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 fake_users_db = {
@@ -50,8 +65,8 @@ def get_user(db, username:str):
         return UserInDB(**user_dict)
     
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def read_roots():
+    return {"message": "This app is serving locally @ localhost/docs"}
 
 @app.get("/getToken/")
 async def get_token(token: Annotated[str, Depends(oauth2_scheme)]):
