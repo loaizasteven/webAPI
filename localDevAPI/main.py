@@ -4,6 +4,10 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
+#Example of accessing the secrets within the container
+with open('/run/secrets/oauth_token', 'r') as f:
+        oauth_token = f.read().strip()
+
 app = FastAPI(
     title="Web Application with Authentication",
     description='This is a sample web app using fastAPI',
@@ -57,7 +61,7 @@ def get_user(db, username:str):
     if username in db:
         user_dict = db.get(username)
         return UserInDB(**user_dict)
-    
+
 @app.get("/")
 def read_roots():
     return {"message": "This app is serving locally @ localhost/docs"}
