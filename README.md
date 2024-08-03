@@ -5,10 +5,15 @@ Example of use for FastAPI
 ```python
 fastapi dev localDevAPI/main.py
 ```
-
-# Mac Installation
+# Installation
+## Mac Installation
 
 Add command-line JSON processer `jq`: https://jqlang.github.io/jq/
 ```bash
 brew install jq
 ```
+Be sure to check if your machine has an Apple silicon or Intel chip
+[Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
+
+## FastAPI in Containers - Docker
+View `README.Docker.md` file.
