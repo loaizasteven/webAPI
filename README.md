@@ -1,5 +1,6 @@
 # webAPI
-Example of use for FastAPI
+Example of use for FastAPI \
+![alt text](../media/media/fastapi.jpeg?raw=true)
 
 # Run Example
 ```python
