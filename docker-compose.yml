@@ -1,0 +1,15 @@
+services:
+  webapi:
+    build: .
+    container_name: fastapicontainer
+    ports:
+      - "80:80"
+    secrets:
+    # will be store in /run/secrets/oauth_token available in the container
+      - oauth_token
+    image: fastapiimage
+
+# Grab secret from a local env variable
+secrets:
+  oauth_token:
+    environment: OAUTH_TOKEN
