@@ -1,11 +1,10 @@
 ### Building and running your application
 
-To compose and build up your application you can following the provided structure in the github repo:
-https://github.com/docker/awesome-compose/tree/master/fastapi
+To compose and build up your application you can following the provided structure in the file `docker-compose.yml`. In this file we send an env variable securely in transit, via encryption, to the docker container. The command below will build the image and run the container, add `-d` to have it detached and run in the background.
 
 `docker compose up --build`.
 
-Your application will be available at http://localhost:8000.
+Your application will be available at http://localhost:80/docs.
 
 ### Otherwise (This repo uses this method)
 
@@ -24,3 +23,4 @@ source api_script && docker_build
 ### References
 * [FastAPI in Containers](https://fastapi.tiangolo.com/deployment/docker/#build-a-docker-image-for-fastapi)
 * [Docker's Python guide](https://docs.docker.com/language/python/)
+* [Docker Secrets Configuration](https://docs.docker.com/compose/use-secrets/)
