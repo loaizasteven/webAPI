@@ -23,3 +23,4 @@ source api_script && docker_build
 ### References
 * [FastAPI in Containers](https://fastapi.tiangolo.com/deployment/docker/#build-a-docker-image-for-fastapi)
 * [Docker's Python guide](https://docs.docker.com/language/python/)
+* [Docker Secrets Configuration](https://docs.docker.com/compose/use-secrets/)
