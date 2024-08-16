@@ -1,11 +1,20 @@
 from typing import Union, Annotated
+from pydantic import BaseModel
+
 import os.path as osp
+from datetime import datetime, timedelta, timezone
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
-
 from passlib.context import CryptContext
+import jwt
+from jwt.exceptions import InvalidTokenError
+
+# to get a string like this run:
+# openssl rand -hex 32
+SECRET_KEY = ""
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 #Example of accessing the secrets within the container
 secret_path = 'run/secrets/oauth_token'
@@ -33,6 +42,10 @@ fake_users_db = {
 
 def fake_hash_password(password: str):
     return "fakehashed" + password
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
 class Item(BaseModel):
@@ -69,6 +82,16 @@ def authenticate_user(fake_db, username: str, password: str):
     if not verify_password(password, user.hashed_password):
         return False
     return user
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 # Oauth
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
