@@ -187,6 +187,6 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
     return {"access_token": user.username, "token_type": "bearer"}
 
-@app.get("/users/me")
+@app.get("/users/me", response_model=User)
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
     return current_user
