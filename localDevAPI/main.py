@@ -78,7 +78,7 @@ app = FastAPI(
     title="Web Application with Authentication",
     description='This is a sample web app using fastAPI',
     summary="Add Summary Here",
-    version="0.0.1",
+    version="0.0.2",
     contact={
         "name": "Steven Loaiza",
         "url": "http://github.com/loaizasteven",
