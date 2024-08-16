@@ -12,7 +12,7 @@ from jwt.exceptions import InvalidTokenError
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = "487b25a85cf41c09fff6710395e585f2c0521700374917e232bf3bf9f8fec870"
+SECRET_KEY = ""
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
