@@ -1,12 +1,16 @@
 from typing import Union, Annotated
+import os.path as osp
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
 #Example of accessing the secrets within the container
-with open('/run/secrets/oauth_token', 'r') as f:
-        oauth_token = f.read().strip()
+secret_path = 'run/secrets/oauth_token'
+
+if osp.isfile(secret_path):
+    with open('/run/secrets/oauth_token', 'r') as f:
+            oauth_token = f.read().strip()
 
 app = FastAPI(
     title="Web Application with Authentication",
