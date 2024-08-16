@@ -12,18 +12,6 @@ if osp.isfile(secret_path):
     with open('/run/secrets/oauth_token', 'r') as f:
             oauth_token = f.read().strip()
 
-app = FastAPI(
-    title="Web Application with Authentication",
-    description='This is a sample web app using fastAPI',
-    summary="Add Summary Here",
-    version="0.0.1",
-    contact={
-        "name": "Steven Loaiza",
-        "url": "http://github.com/loaizasteven",
-    },
-)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
-
 fake_users_db = {
     "johndoe": {
         "username": "johndoe",
@@ -66,6 +54,20 @@ def get_user(db, username:str):
         user_dict = db.get(username)
         return UserInDB(**user_dict)
 
+# Oauth
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+
+app = FastAPI(
+    title="Web Application with Authentication",
+    description='This is a sample web app using fastAPI',
+    summary="Add Summary Here",
+    version="0.0.1",
+    contact={
+        "name": "Steven Loaiza",
+        "url": "http://github.com/loaizasteven",
+    },
+)
+
 @app.get("/")
 def read_roots():
     return {"message": "This app is serving locally @ localhost/docs"}
@@ -96,13 +98,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
             headers={"WWW-Authenticate": "Bearer"}
         )
     return user
+
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
 
 @app.post("/token")
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
