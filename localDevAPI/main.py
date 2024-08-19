@@ -11,8 +11,13 @@ file_dir = os.path.dirname(__file__)
 root_dir = os.path.dirname(file_dir)
 sys.path.insert(0, root_dir)
 
-from security.classstructures import Token, Item, User, UserInDB
-from security.authentication import *
+from security.classstructures import Token, Item, User
+from security.authentication import (
+    get_current_active_user, 
+    authenticate_user, 
+    create_access_token, 
+    fake_users_db
+)
 from security import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
