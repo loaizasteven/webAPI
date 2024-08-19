@@ -1,5 +1,4 @@
 from typing import Union, Annotated
-from pydantic import BaseModel
 
 import os
 import os.path as osp
@@ -17,18 +16,18 @@ root_dir = os.path.dirname(file_dir)
 sys.path.insert(0, root_dir)
 from security.classstructures import Token, TokenData, Item, User, UserInDB
 
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = ""
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 #Example of accessing the secrets within the container
 secret_path = 'run/secrets/oauth_token'
 
 if osp.isfile(secret_path):
     with open('/run/secrets/oauth_token', 'r') as f:
             oauth_token = f.read().strip()
+else:
+    # to get a string like this run:
+    # openssl rand -hex 32
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 fake_users_db = {
     "johndoe": {

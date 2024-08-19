@@ -30,7 +30,13 @@ function docker_build () {
   docker run -d --name $CONTAINER -p 80:80 $IMAGE
 }
 
+# Used for JWT encoding
+function set_secret () {
+  export SECRET_KEY=$(openssl rand -hex 32)
+}
+
 # Run on mac with source api_script && authenticate_and_get
+# Make this compatible with docker container
 function authenticate_and_get () {
   # args
   #  : @required string $1=username
