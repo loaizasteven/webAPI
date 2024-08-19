@@ -1,7 +1,9 @@
 from typing import Union, Annotated
 from pydantic import BaseModel
 
+import os
 import os.path as osp
+import sys
 from datetime import datetime, timedelta, timezone
 
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -9,6 +11,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 import jwt
 from jwt.exceptions import InvalidTokenError
+
+file_dir = os.path.dirname(__file__)
+root_dir = os.path.dirname(file_dir)
+sys.path.insert(0, root_dir)
+from security.classstructures import Token, TokenData, Item, User, UserInDB
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -42,31 +49,6 @@ fake_users_db = {
 
 def fake_hash_password(password: str):
     return "fakehashed" + password
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
-
-class User(BaseModel):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-
-
-class UserInDB(User):
-    hashed_password: str
 
 def get_user(db, username:str):
     if username in db:
