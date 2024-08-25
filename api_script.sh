@@ -33,6 +33,7 @@ function docker_build () {
 # Used for JWT encoding
 function set_secret () {
   export SECRET_KEY=$(openssl rand -hex 32)
+  echo "SECRET_KEY=$SECRET_KEY" > .env
 }
 
 # Run on mac with source api_script && authenticate_and_get
