@@ -18,3 +18,5 @@ Be sure to check if your machine has an Apple silicon or Intel chip
 
 ## FastAPI in Containers - Docker
 View `README.Docker.md` file.
+
+# Oauth2 with passwords
