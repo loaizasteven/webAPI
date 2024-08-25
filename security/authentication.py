@@ -71,23 +71,37 @@ def fake_decode_token(token):
     """This does not provide any security yet"""
     return get_user(fake_users_db, token)
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
+
+class ErrorRaise:
+    USERNAMEMISSING:HTTPException = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="User missing in paylod",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+    INVALIDTOKEN:HTTPException = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate crendentials",
         headers={"WWW-Authenticate": "Bearer"}
     )
+    USERMISSING:HTTPException = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="User does not have access",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    exceptions_ = ErrorRaise()
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if not username:
-            raise credentials_exception
+            raise exceptions_.USERNAMEMISSING
         token_data = TokenData(username=username)
     except InvalidTokenError:
-        raise credentials_exception
+        raise exceptions_.INVALIDTOKEN
     user = get_user(fake_users_db, username=token_data.username)
     if user is None:
-        raise credentials_exception
+        raise exceptions_.USERMISSING
     return user 
 
 async def get_current_active_user(
