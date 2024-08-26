@@ -15,11 +15,10 @@ from security.classstructures import Token, Item, User
 from security.authentication import (
     get_current_active_user, 
     authenticate_user, 
-    create_access_token, 
-    fake_users_db
+    create_access_token
 )
 from security import ACCESS_TOKEN_EXPIRE_MINUTES
-
+from database import USERDATABASE
 
 app = FastAPI(
     title="Web Application with Authentication",
@@ -47,8 +46,9 @@ def update_item(item_id: int, item: Item):
 @app.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    static_database:Dict = USERDATABASE
 ) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(static_database, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
