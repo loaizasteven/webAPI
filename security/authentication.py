@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from security import SECRET_KEY, ALGORITHM
+from security import SECRET_KEY, ALGORITHM, ErrorRaise
 from security.classstructures import UserInDB, TokenData, User
 
 from fastapi.security import OAuth2PasswordBearer
@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 import jwt 
 from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException
 from typing import Annotated
 
 
@@ -71,30 +71,6 @@ def fake_decode_token(token):
     """This does not provide any security yet"""
     return get_user(fake_users_db, token)
 
-
-class ErrorRaise:
-    USERNAMEMISSING:HTTPException = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="User missing in paylod",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-    INVALIDTOKEN:HTTPException = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate crendentials",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-    USERMISSING:HTTPException = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="User does not have access",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-
-    EXPIRESIG:HTTPException = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Token Expired, Reauthenticate",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
-
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     exceptions_ = ErrorRaise()
     try:
@@ -105,6 +81,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except ExpiredSignatureError:
         raise exceptions_.EXPIRESIG
+    # Base Class for all Exceptions
     except InvalidTokenError:
         raise exceptions_.INVALIDTOKEN
     user = get_user(fake_users_db, username=token_data.username)
