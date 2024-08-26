@@ -13,6 +13,7 @@ from passlib.context import CryptContext
 
 sys.path.insert(0, osp.dirname(osp.dirname(__file__)))
 from database import USERQUESTIONS
+from security.authentication import get_password_hash
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # TODO: Add method to disable user
@@ -58,9 +59,6 @@ def format_user(username:str, password:str) -> Dict:
         }
     }
 
-def hashinput(val:str) -> str:
-    return str(pwd_context.hash(val)) 
-
 
 if __name__ == "__main__":
     # DataBase
@@ -70,7 +68,7 @@ if __name__ == "__main__":
     for ques in USERQUESTIONS:
         reponse = input(ques)
         if "password" in ques.lower():
-            pass_ = hashinput(reponse)
+            pass_ = get_password_hash(reponse)
         else:
             user_ = reponse
 
