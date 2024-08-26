@@ -27,7 +27,7 @@ def fixcollision(database:Dict, payload:Dict, intcounter:Annotated[int, add] = 1
         return payload
     else:
         payload[key_]['username'] = payload[key_].get("username") + str(intcounter)
-        fullname = payload[key_].get('fullname').lower()
+        fullname = payload[key_].get('full_name').lower()
         payload[key_]['email'] = re.sub(r"\s+", "", fullname) + str(intcounter) + '@example.com'
 
         updatedpayload = {
@@ -51,7 +51,7 @@ def format_user(username:str, password:str) -> Dict:
     return {
         nameconcat: {
             "username": nameconcat,
-            "fullname":  ' '.join(list(map(str.title, name_elements))),
+            "full_name":  ' '.join(list(map(str.title, name_elements))),
             "email": nameconcat + "@example.com",
             "hashed_password": password,
             "disabled": False
