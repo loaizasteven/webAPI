@@ -50,7 +50,7 @@ def format_user(username:str, password:str) -> Dict:
     nameconcat = ''.join(list(map(str.lower, full_name)))
     return {
         nameconcat: {
-            "username": name_elements[0].lower(),
+            "username": nameconcat,
             "fullname":  ' '.join(list(map(str.title, name_elements))),
             "email": nameconcat + "@example.com",
             "hashed_password": password,
