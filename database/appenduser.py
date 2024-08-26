@@ -7,11 +7,13 @@ from typing import Dict, Annotated
 from operator import itemgetter, add
 
 import warnings
-
 import re
+
+from passlib.context import CryptContext
 
 sys.path.insert(0, osp.dirname(osp.dirname(__file__)))
 from database import USERQUESTIONS
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def fixcollision(database:Dict, payload:Dict, intcounter:Annotated[int, add] = 1) -> Dict:
     """
@@ -19,7 +21,7 @@ def fixcollision(database:Dict, payload:Dict, intcounter:Annotated[int, add] = 1
     """
     intcounter += 1
     key_ = next(iter(payload))
-    
+
     if not database.get(f'{key_}'):
         return payload
     else:
@@ -56,7 +58,7 @@ def format_user(username:str, password:str) -> Dict:
     }
 
 def hashinput(val:str) -> str:
-    return str(hash(val)) 
+    return str(pwd_context.hash(val)) 
 
 
 if __name__ == "__main__":
