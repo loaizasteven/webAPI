@@ -6,14 +6,21 @@ import sys
 from typing import Dict
 from operator import itemgetter
 
+import warnings
+
 sys.path.insert(0, osp.dirname(osp.dirname(__file__)))
 from database import USERQUESTIONS
 
 def format_user(username:str, password:str) -> Dict:
+    name_elements = username.split(' ')
+    assert len(name_elements) < 4, "UserName should be at most three words"
     # Get elements
     getnames = itemgetter(0, -1)
-    name_elements = username.split(' ')
     full_name = list(getnames(name_elements))
+
+    if len(name_elements)>2 and len(name_elements[1])>1:
+        warnings.warn("Middle name should only be an Initial. We'll fix it for you")
+        name_elements[1] = name_elements[1][0].upper()
 
     nameconcat = ''.join(list(map(str.lower, full_name)))
     return {
