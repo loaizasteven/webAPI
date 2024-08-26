@@ -1,9 +1,13 @@
 import json
 import os
 import os.path as osp
+import sys
 
 from typing import Dict
 from operator import itemgetter
+
+sys.path.insert(0, osp.dirname(osp.dirname(__file__)))
+from database import USERQUESTIONS
 
 def format_user(username:str, password:str) -> Dict:
     # Get elements
@@ -22,19 +26,22 @@ def format_user(username:str, password:str) -> Dict:
         }
     }
 
+def hashinput(val:str) -> str:
+    return str(hash(val)) 
+
+
 if __name__ == "__main__":
     # DataBase
     database = osp.join(osp.dirname(__file__), 'activeusers.json')
 
     # User Input
-    static_val = ['Provide First and Last Name e.g.(John Doe) if middle name provide just the initials: ',
-                'Provide Password: ']
-    
-    for ques in static_val:
+    for ques in USERQUESTIONS:
+        reponse = input(ques)
         if "password" in ques.lower():
-            pass_ = str(hash(input(ques)))
+            pass_ = hashinput(reponse)
         else:
-            user_ = str(input(ques))
+            user_ = reponse
+
     new_data = format_user(username=user_, password=pass_)
     # Run
     if os.path.exists(database) and os.path.getsize(database)>0:
