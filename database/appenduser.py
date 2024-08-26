@@ -53,7 +53,7 @@ def format_user(username:str, password:str) -> Dict:
             "fullname":  ' '.join(list(map(str.title, name_elements))),
             "email": nameconcat + "@example.com",
             "hashed_password": password,
-            "disabled": True
+            "disabled": False
         }
     }
 
