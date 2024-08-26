@@ -6,7 +6,7 @@ from security.classstructures import UserInDB, TokenData, User
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 import jwt 
-from jwt.exceptions import InvalidTokenError
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
 from fastapi import Depends, HTTPException, status
 from typing import Annotated
@@ -89,6 +89,12 @@ class ErrorRaise:
         headers={"WWW-Authenticate": "Bearer"}
     )
 
+    EXPIRESIG:HTTPException = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Token Expired, Reauthenticate",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     exceptions_ = ErrorRaise()
     try:
@@ -97,6 +103,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if not username:
             raise exceptions_.USERNAMEMISSING
         token_data = TokenData(username=username)
+    except ExpiredSignatureError:
+        raise exceptions_.EXPIRESIG
     except InvalidTokenError:
         raise exceptions_.INVALIDTOKEN
     user = get_user(fake_users_db, username=token_data.username)
