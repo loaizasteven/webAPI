@@ -15,6 +15,7 @@ sys.path.insert(0, osp.dirname(osp.dirname(__file__)))
 from database import USERQUESTIONS
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# TODO: Add method to disable user
 def fixcollision(database:Dict, payload:Dict, intcounter:Annotated[int, add] = 1) -> Dict:
     """
     Deals with single colliding keys in database
