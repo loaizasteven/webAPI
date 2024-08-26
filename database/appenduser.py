@@ -3,13 +3,35 @@ import os
 import os.path as osp
 import sys
 
-from typing import Dict
-from operator import itemgetter
+from typing import Dict, Annotated
+from operator import itemgetter, add
 
 import warnings
 
+import re
+
 sys.path.insert(0, osp.dirname(osp.dirname(__file__)))
 from database import USERQUESTIONS
+
+def fixcollision(database:Dict, payload:Dict, intcounter:Annotated[int, add] = 1) -> Dict:
+    """
+    Deals with single colliding keys in database
+    """
+    intcounter += 1
+    key_ = next(iter(payload))
+    
+    if not database.get(f'{key_}'):
+        return payload
+    else:
+        payload[key_]['username'] = payload[key_].get("username") + str(intcounter)
+        fullname = payload[key_].get('fullname').lower()
+        payload[key_]['email'] = re.sub(r"\s+", "", fullname) + str(intcounter) + '@example.com'
+
+        updatedpayload = {
+            key_ + str(intcounter) : payload.get(key_)
+        }
+        return fixcollision(database=database, payload=updatedpayload, intcounter=intcounter)
+
 
 def format_user(username:str, password:str) -> Dict:
     name_elements = username.split(' ')
@@ -54,6 +76,7 @@ if __name__ == "__main__":
     if os.path.exists(database) and os.path.getsize(database)>0:
         with open(database, 'r+') as file:
             current_users = json.load(file)
+            new_data = fixcollision(current_users, new_data)
             current_users.update(new_data)
             # Set pointer to beginning of file, writing places the new content at the top of the file
             # now pointer is after the new content and then we use truncate to remove content after 
